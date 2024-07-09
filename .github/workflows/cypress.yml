@@ -28,7 +28,7 @@ jobs: #this is the main workflow
       - name: Checkout # checkout to the branch with proper test or one with the main tests
         uses: actions/checkout@v3
         with: 
-          ref: main # for now we will keep it to main branch
+          ref: master # for now we will keep it to main branch
 
       - name: Setup Node version
         uses: actions/setup-node@v3
