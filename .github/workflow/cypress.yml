@@ -5,7 +5,7 @@ on:  #triggers can be done in different ways this one is for default manual run
 jobs: #this is the main workflow
   cypress-run:
     env:
-      CYPRESS_host: # here give your host URL
+      CYPRESS_host: https://example.cypress.io # here give your host URL
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} # we will set this up later, its devOps work but you will know where this is
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this will be generated automatically no need to do anything but this line is important
 
@@ -64,7 +64,7 @@ jobs: #this is the main workflow
           parallel: true # this has to be true for the parallel run to work
           project: ./
           spec: ./cypress/e2e/
-          wait-on: https://parabank.parasoft.com/parabank/index.htm
+          wait-on: https://example.cypress.io
           config-file: cypress.config.js
           browser: chrome
 
