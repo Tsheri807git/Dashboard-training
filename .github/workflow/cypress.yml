@@ -1,0 +1,73 @@
+name: Cypress Dashboard E2E Tests #you can give your own name here
+on:  #triggers can be done in different ways this one is for default manual run
+  workflow_dispatch: 
+
+jobs: #this is the main workflow
+  cypress-run:
+    env:
+      CYPRESS_host: # here give your host URL
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} # we will set this up later, its devOps work but you will know where this is
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this will be generated automatically no need to do anything but this line is important
+
+    runs-on: self-hosted # this here specifies the runner, we will set up one for oueself to test on which will be self hosted
+
+    strategy:
+      # when one test fails, DO NOT cancel the other
+      # containers, because this will kill Cypress processes
+      # leaving Cypress Cloud hanging ...
+      fail-fast: false
+      #run copies of the current job in parallel
+      matrix:
+        containers: [1] #increase containers as necessary, but for now we will have only 1
+
+    steps:
+      - name: Set Date 
+        id: date
+        run: echo "currentDate=$(TZ=Asia/Thimphu date +%d-%b-%Y\ %H:%M:%S\ %Z)" >> $GITHUB_OUTPUT
+
+      - name: Checkout # checkout to the branch with proper test or one with the main tests
+        uses: actions/checkout@v3
+        with: 
+          ref: main # for now we will keep it to main branch
+
+      - name: Setup Node version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.16.0' 
+
+      - name: Cache node packages
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: |
+            **/node_modules
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-cache
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1.2.0
+        with:
+          chrome-version: stable
+
+      - run: chrome --version
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          install: false
+          record: true
+          parallel: true # this has to be true for the parallel run to work
+          project: ./
+          spec: ./cypress/e2e/
+          wait-on: https://parabank.parasoft.com/parabank/index.htm
+          config-file: cypress.config.js
+          browser: chrome
+
+        env:
+          COMMIT_INFO_MESSAGE: 'Test ${{ steps.date.outputs.currentDate }} '
+          COMMIT_INFO_AUTHOR: 'PAA' # give your own name should be fine
