@@ -21,10 +21,7 @@ jobs: #this is the main workflow
         containers: [1] #increase containers as necessary, but for now we will have only 1
 
     steps:
-      - name: Set Date 
-        id: date
-        run: echo "currentDate=$(TZ=Asia/Thimphu date +%d-%b-%Y\ %H:%M:%S\ %Z)" >> $GITHUB_OUTPUT
-
+      
       - name: Checkout # checkout to the branch with proper test or one with the main tests
         uses: actions/checkout@v3
         with: 
@@ -69,5 +66,5 @@ jobs: #this is the main workflow
           browser: chrome
 
         env:
-          COMMIT_INFO_MESSAGE: 'Test ${{ steps.date.outputs.currentDate }} '
+          COMMIT_INFO_MESSAGE: 'Test'
           COMMIT_INFO_AUTHOR: 'PAA' # give your own name should be fine
