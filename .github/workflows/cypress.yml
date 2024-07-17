@@ -18,7 +18,7 @@ jobs: #this is the main workflow
       fail-fast: false
       #run copies of the current job in parallel
       matrix:
-        containers: [1 2] #increase containers as necessary, but for now we will have only 1
+        containers: [1, 2] #increase containers as necessary, but for now we will have only 1
 
     steps:
       
