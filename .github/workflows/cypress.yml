@@ -33,7 +33,7 @@ jobs: #this is the main workflow
           node-version: '16.16.0' 
 
       - name: Install Dependencies
-        run: yarn install
+        run: npm install
 
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1.2.0
